@@ -3,12 +3,13 @@
 -- SQLBook: Markup
 ## Submit as a `.sqlbook`
 -- SQLBook: Markup
-### Write your name (double click this cell):
+### Write your name (double click this cell): Eric Zhang
 -- SQLBook: Markup
 <font size = "5">
 
 Delete existing table if it exists (run the line of code below)
 -- SQLBook: Code
+-- Active: 1745116683791@@127.0.0.1@5432@postgres
 DROP TABLE IF EXISTS movies;
 -- SQLBook: Markup
 ### a) Part 1: Creating Tables
@@ -21,9 +22,14 @@ Create a database table for tracking movies. Create a table called movies with t
 - `release_year` (integer)
 - `rating` (decimal number)
 -- SQLBook: Code
-
-
-
+-- Active: 1745116683791@@127.0.0.1@5432@postgres
+CREATE TABLE movies (
+    movie_id INT PRIMARY KEY,
+    title VARCHAR(50),
+    director VARCHAR(30),
+    release_year INT,
+    rating DECIMAL(3,1)
+);
 -- SQLBook: Markup
 ### a) Part 2: Adding rows to the table
 Now we need to add movies to the table. Insert the movies given below into the table (the variables are already given in corresponding order):
@@ -35,7 +41,13 @@ Now we need to add movies to the table. Insert the movies given below into the t
 
 HINT: Use ```INSERT INTO```
 -- SQLBook: Code
-
+-- Active: 1745116683791@@127.0.0.1@5432@postgres
+INSERT INTO movies (movie_id, title, director, release_year, rating) VALUES
+(1, 'The Shawshank Redemption', 'Frank Darabont', 1994, 9.3),
+(2, 'Parasite', 'Bong Joon-Ho', 2019, 8.5),
+(3, 'The Dark Knight', 'Christopher Nolan', 2008, 9.0),
+(4, 'Everything Everywhere All at Once', 'Daniel Kwan', 2022, 7.8),
+(5, 'Pulp Fiction', 'Quentin Tarantino', 1994, 8.9);
 -- SQLBook: Markup
 ### b) Querying
 Using the movies table you created in Problem 1:
@@ -43,7 +55,10 @@ Using the movies table you created in Problem 1:
 - Write a query to find all movies directed by a specific director (choose one from your inserted data).
 - Write a query that returns only the title and release_year columns, sorted by release year in ascending order.
 -- SQLBook: Code
-
+-- Active: 1745116683791@@127.0.0.1@5432@postgres
+SELECT * FROM movies WHERE release_year > 2010;
+SELECT * FROM movies WHERE director = 'Quentin Tarantino';
+SELECT title, release_year FROM movies ORDER BY release_year ASC;
 -- SQLBook: Markup
 ### c) Aggregation
 Add some these movies to your movies table and then write queries to:
@@ -55,14 +70,25 @@ Add some these movies to your movies table and then write queries to:
 - Count how many movies were released in each decade (2000s, 2010s, 2020s, etc.) and display the results.
 - HINT: Use FLOOR and COUNT, then use GROUP BY and ORDER BY
 -- SQLBook: Code
-
+-- Active: 1745116683791@@127.0.0.1@5432@postgres
+INSERT INTO movies (movie_id, title, director, release_year, rating) VALUES
+(6, 'The Godfather', 'Francis Ford Coppola', 1972, 9.2),
+(7, 'Inception', 'Christopher Nolan', 2010, 8.8),
+(8, 'Dune', 'Denis Villeneuve', 2021, 8.0),
+(9, 'Oppenheimer', 'Christopher Nolan', 2023, 8.4);
+SELECT FLOOR(release_year/10)*10 AS decade, COUNT(*) AS count
+FROM movies
+GROUP BY decade ORDER BY decade;
 -- SQLBook: Markup
 ### d) Filtering
 - Find all movies with a rating above 8.0 AND released before 2015.
 - Find movies directed by Christopher Nolan.
 - Select the titles of the top 3 highest-rated movies.
 -- SQLBook: Code
-
+-- Active: 1745116683791@@127.0.0.1@5432@postgres
+SELECT * FROM movies WHERE rating > 8.0 and release_year < 2015;
+SELECT * FROM movies WHERE director = 'Christopher Nolan';
+SELECT title FROM movies ORDER BY rating DESC LIMIT 3;
 -- SQLBook: Markup
 ### e) Updating and deleting records
 
@@ -80,5 +106,6 @@ Learn more about the SET command here:
 
 https://www.w3schools.com/sql/sql_ref_set.asp
 -- SQLBook: Code
-
-
+-- Active: 1745116683791@@127.0.0.1@5432@postgres
+UPDATE movies SET rating = 9.5 WHERE title = 'The Shawshank Redemption';
+DELETE FROM movies WHERE movie_id = 5;
